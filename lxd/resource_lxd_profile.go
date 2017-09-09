@@ -55,7 +55,6 @@ func resourceLxdProfile() *schema.Resource {
 			"config": &schema.Schema{
 				Type:     schema.TypeMap,
 				Optional: true,
-				ForceNew: true,
 			},
 
 			"remote": &schema.Schema{
@@ -144,6 +143,12 @@ func resourceLxdProfileUpdate(d *schema.ResourceData, meta interface{}) error {
 		changed = true
 		_, newDescription := d.GetChange("description")
 		newProfile.Description = newDescription.(string)
+	}
+
+	if d.HasChange("config") {
+		changed = true
+		_, newConfig := d.GetChange("config")
+		newProfile.Config = resourceLxdConfigMap(newConfig)
 	}
 
 	if d.HasChange("device") {
