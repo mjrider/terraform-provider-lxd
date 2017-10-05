@@ -4,18 +4,25 @@ sudo: true
 dist: trusty
 
 env:
-  - TF_ACC=1 \
-   LXD_REMOTE=travis \
-   LXD_ADDR=localhost \
-   LXD_PORT=8443 \
-   LXD_GENERATE_CLIENT_CERTS=true \
-   LXD_ACCEPT_SERVER_CERTIFICATE=true \
-   LXD_SCHEME=https \
-   LXD_PASSWORD=the-password \
+  global:
+    - TF_ACC=1
+    - LXD_REMOTE=travis
+    - LXD_ADDR=localhost
+    - LXD_PORT=8443
+    - LXD_GENERATE_CLIENT_CERTS=true
+    - LXD_ACCEPT_SERVER_CERTIFICATE=true
+    - LXD_SCHEME=https
+    - LXD_PASSWORD="the-password"
+  matrix:
+    - CHANNEL="stable"
+    - CHANNEL="candidate"
+    - CHANNEL="edge"
+    - CHANNEL="2.0/stable"
+    - CHANNEL="2.0/candidate"
 
 before_install:
   - sudo apt-get install -y snapd
-  - sudo snap install lxd
+  - sudo snap install lxd --channel=${CHANNEL}
   - export PATH=/snap/bin/:${PATH}
   - sleep 10 # give lxd time to start
   - sudo lxd init --auto --trust-password="${LXD_PASSWORD}" --network-port=8443 --network-address='[::]'
