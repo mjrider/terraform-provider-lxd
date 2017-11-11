@@ -22,6 +22,7 @@ before_install:
   - sudo chmod 777 /var/snap/lxd/common/lxd/unix.socket
   - 'lxc image copy ubuntu:t local: --alias=ubuntu'
   - lxc image list
+  - go get github.com/kardianos/govendor
 
 go:
   - 1.9
