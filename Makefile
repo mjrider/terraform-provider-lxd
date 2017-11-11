@@ -1,7 +1,7 @@
 test:
 	govendor sync
-	go get ./...
 	go get github.com/dustinkirkland/golang-petname
+	go build -v
 	go test -timeout 20m -v ./lxd
 
 testacc:
