@@ -354,17 +354,20 @@ func resourceLxdContainerRead(d *schema.ResourceData, meta interface{}) error {
 	config := make(map[string]string)
 	limits := make(map[string]string)
 	for k, v := range container.Config {
-		if strings.Contains(k, "limits.") {
-			limits[strings.TrimPrefix(k, "limits.")] = v
-		} else if strings.HasPrefix(k, "boot.") {
-			config[k] = v
-		} else if strings.HasPrefix(k, "environment.") {
-			config[k] = v
-		} else if strings.HasPrefix(k, "raw.") {
-			config[k] = v
-		} else if strings.HasPrefix(k, "security.") {
-			config[k] = v
-		} else if strings.HasPrefix(k, "user.") {
+		switch parts := strings.SplitN(k, ".", 2); parts[0] {
+		case "limits":
+			limits[parts[1]] = v
+		case "boot":
+			fallthrough
+		case "environment":
+			fallthrough
+		case "security":
+			fallthrough
+		case "linux":
+			fallthrough
+		case "user":
+			fallthrough
+		case "raw":
 			config[k] = v
 		}
 	}
